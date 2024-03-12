@@ -22,15 +22,17 @@ def canUnlockAll(boxes):
   # Track keys to explore (LIFO - stack behavior)
   keys_to_explore = [0]
 
+  boxes_num = len(boxes)
+
   while keys_to_explore:
     # Get the next key to explore
     current_key = keys_to_explore.pop()
 
     # Check keys available in the box associated with the current key
     for key in boxes[current_key]:
-      if key not in visited_boxes:
+      if key not in visited_boxes and key < boxes_num:
         visited_boxes.append(key)
         keys_to_explore.append(key)
 
   # All boxes unlocked if the number of visited boxes matches the total number of boxes
-  return len(visited_boxes) == len(boxes)
+  return len(visited_boxes) == boxes_num
