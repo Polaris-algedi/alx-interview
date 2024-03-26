@@ -77,7 +77,6 @@ def log_parsing():
         for line in sys.stdin:
             if line.count(' ') != 8:
                 continue
-            print(line)
             try:
                 total_size += get_file_size(line)
                 status_code[get_status_code(
