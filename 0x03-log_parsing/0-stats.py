@@ -3,7 +3,8 @@
 This module provides functions to parse log files and print statistics.
 
 The module contains the following functions:
-- print_statistics(status_dict, file_size): Prints the statistics of the log file.
+- print_statistics(status_dict, file_size): Prints the statistics
+of the log file.
 - get_file_size(line): Gets the file size from a log line.
 - get_status_code(line): Gets the status code from a log line.
 - log_parsing(): Parses the log file and prints statistics.
@@ -18,7 +19,8 @@ def print_statistics(status_dict, file_size):
     Print the statistics of the log file.
 
     Args:
-        status_dict (dict): A dictionary containing the count of each status code.
+        status_dict (dict): A dictionary containing the count
+        of each status code.
         file_size (int): The total file size.
 
     Returns:
@@ -40,6 +42,7 @@ def get_file_size(line):
     Returns:
         int: The file size.
     """
+
     file_size = re.search(r'\d+$', line)
     return int(file_size.group())
 
@@ -77,17 +80,17 @@ def log_parsing():
         for line in sys.stdin:
             if line.count(' ') != 8:
                 continue
-            try:
-                total_size += get_file_size(line)
-                status_code[get_status_code(
-                    line)] = status_code[get_status_code(line)] + 1
-                if count == 10:
-                    print_statistics(status_code, total_size)
-                    count = 1
-                else:
-                    count += 1
-            except:
-                pass
+            # try:
+            total_size += get_file_size(line)
+            status_code[get_status_code(
+                line)] = status_code[get_status_code(line)] + 1
+            if count == 10:
+                print_statistics(status_code, total_size)
+                count = 1
+            else:
+                count += 1
+    except AttributeError:
+        pass
     except KeyboardInterrupt:
         print_statistics(status_code, total_size)
 
