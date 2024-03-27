@@ -32,35 +32,6 @@ def print_statistics(status_dict, file_size):
             print('{}: {}'.format(key, status_dict[key]))
 
 
-def get_file_size(line):
-    """
-    Get the file size from a log line.
-
-    Args:
-        line (str): A log line.
-
-    Returns:
-        int: The file size.
-    """
-
-    file_size = re.search(r'\d+$', line)
-    return int(file_size.group())
-
-
-def get_status_code(line):
-    """
-    Get the status code from a log line.
-
-    Args:
-        line (str): A log line.
-
-    Returns:
-        int: The status code.
-    """
-    status_code = re.search(r' 200|301|400|401|403|404|405|500 ', line)
-    return int(status_code.group())
-
-
 def log_parsing():
     """
     Parse the log file and print statistics.
@@ -68,7 +39,7 @@ def log_parsing():
     Returns:
         None
     """
-    status_code = {
+    status_dict = {
         200: 0, 301: 0,
         400: 0, 401: 0,
         403: 0, 404: 0,
@@ -80,19 +51,24 @@ def log_parsing():
         for line in sys.stdin:
             if line.count(' ') != 8:
                 continue
-            # try:
-            total_size += get_file_size(line)
-            status_code[get_status_code(
-                line)] = status_code[get_status_code(line)] + 1
+            # Get the file size from a log line.
+            file_size = re.search(r'\d+$', line)
+            total_size += int(file_size.group())
+
+            # Get the status code from a log line.
+            status_code_match = re.search(
+                r' 200|301|400|401|403|404|405|500 ', line)
+            if status_code_match:
+                status_code = int(status_code_match.group())
+                status_dict[status_code] += 1
+
             if count == 10:
-                print_statistics(status_code, total_size)
+                print_statistics(status_dict, total_size)
                 count = 1
             else:
                 count += 1
-    except AttributeError:
-        pass
     except KeyboardInterrupt:
-        print_statistics(status_code, total_size)
+        print_statistics(status_dict, total_size)
 
 
 log_parsing()
