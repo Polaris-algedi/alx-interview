@@ -27,9 +27,10 @@ def print_statistics(status_dict, file_size):
         None
     """
     print('File size: {}'.format(file_size))
-    for key in status_dict:
-        if status_dict[key] != 0:
-            print('{}: {}'.format(key, status_dict[key]))
+    status_codes = [200, 301, 400, 401, 403, 404, 405, 500]
+    for code in status_codes:
+        if status_dict[code] != 0:
+            print('{}: {}'.format(code, status_dict[code]))
 
 
 def log_parsing():
