@@ -34,15 +34,14 @@ try:
 
         counter += 1
 
-        if counter <= 10:
-            # Extract file size and status code
-            file_size = int(parsed_line[-1])
-            # Second last element is status code
-            status_code = parsed_line[-2]
+        # Extract file size and status code
+        file_size = int(parsed_line[-1])
+        # Second last element is status code
+        status_code = parsed_line[-2]
 
-            if status_code in status_dict:
-                total_file_size += file_size
-                status_dict[status_code] += 1
+        if status_code in status_dict:
+            total_file_size += file_size
+            status_dict[status_code] += 1
 
         if counter == 10:
             print_statistics(status_dict, total_file_size)
