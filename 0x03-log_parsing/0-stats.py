@@ -5,9 +5,6 @@ This module provides functions to parse log files and print statistics.
 The module contains the following functions:
 - print_statistics(status_dict, file_size): Prints the statistics
 of the log file.
-- get_file_size(line): Gets the file size from a log line.
-- get_status_code(line): Gets the status code from a log line.
-- log_parsing(): Parses the log file and prints statistics.
 """
 
 import sys
@@ -26,42 +23,34 @@ def print_statistics(status_dict, file_size):
     Returns:
         None
     """
-    print('File size: {}'.format(file_size))
-    status_codes = [200, 301, 400, 401, 403, 404, 405, 500]
-    for code in status_codes:
-        if status_dict[code] != 0:
-            print('{}: {}'.format(code, status_dict[code]))
+    print('File size:', file_size)
+    for code, count in sorted(status_dict.items()):
+        if count:
+            print(f"{code}: {count}")
 
 
-status_dict = {
-    200: 0, 301: 0,
-    400: 0, 401: 0,
-    403: 0, 404: 0,
-    405: 0, 500: 0
-}
+status_dict = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
 total_size = 0
-count = 1
+count = 0
+
 try:
     for line in sys.stdin:
-        if line.count(' ') != 8:
-            continue
-        try:
-            # Get the file size from a log line.
-            file_size = re.search(r'\d+$', line)
-            total_size += int(file_size.group())
+        # Extract file size and status code
+        file_size_match = re.search(r'\b(\d+)\s*$', line)
+        status_code_match = re.search(
+            r'\b(200|301|400|401|403|404|405|500)\b', line)
 
-            # Get the status code from a log line.
-            status_code_match = re.search(
-                r' 200|301|400|401|403|404|405|500 ', line)
-            status_code = int(status_code_match.group())
+        if file_size_match and status_code_match:
+            file_size = int(file_size_match.group(1))
+            total_size += file_size
+
+            status_code = int(status_code_match.group(1))
             status_dict[status_code] += 1
-        except (TypeError, AttributeError, ValueError):
-            continue
 
-        if count == 10:
-            print_statistics(status_dict, total_size)
-            count = 1
-        else:
             count += 1
+            if count == 10:
+                print_statistics(status_dict, total_size)
+                count = 0
+
 except KeyboardInterrupt:
     print_statistics(status_dict, total_size)
