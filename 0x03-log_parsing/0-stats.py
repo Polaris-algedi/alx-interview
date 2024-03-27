@@ -52,16 +52,18 @@ def log_parsing():
         for line in sys.stdin:
             if line.count(' ') != 8:
                 continue
-            # Get the file size from a log line.
-            file_size = re.search(r'\d+$', line)
-            total_size += int(file_size.group())
+            try:
+                # Get the file size from a log line.
+                file_size = re.search(r'\d+$', line)
+                total_size += int(file_size.group())
 
-            # Get the status code from a log line.
-            status_code_match = re.search(
-                r' 200|301|400|401|403|404|405|500 ', line)
-            if status_code_match:
+                # Get the status code from a log line.
+                status_code_match = re.search(
+                    r' 200|301|400|401|403|404|405|500 ', line)
                 status_code = int(status_code_match.group())
                 status_dict[status_code] += 1
+            except (TypeError, AttributeError, ValueError):
+                continue
 
             if count == 10:
                 print_statistics(status_dict, total_size)
