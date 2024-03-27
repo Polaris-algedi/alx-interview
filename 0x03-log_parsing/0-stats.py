@@ -48,5 +48,5 @@ try:
             print_statistics(status_dict, total_file_size)
             counter = 0
 
-except KeyboardInterrupt:
+finally:
     print_statistics(status_dict, total_file_size)
