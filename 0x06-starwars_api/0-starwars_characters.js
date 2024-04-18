@@ -1,4 +1,4 @@
-#!/usr/bin node
+#!/usr/bin/node
 
 /**
  * Retrieves Star Wars character names from a given movie.
