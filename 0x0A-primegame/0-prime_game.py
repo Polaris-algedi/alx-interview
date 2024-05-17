@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+"""
+This module contains a function to determine the winner of the prime game.
+"""
+
 
 def isWinner(x, nums):
     """
